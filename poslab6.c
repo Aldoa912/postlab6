@@ -78,11 +78,15 @@ void main(void) {
                     TXREG = ADC;
                     __delay_ms(100);
                     TXREG = 10;
-                    __delay_ms(100);
+                    
                     TXREG = 13;
                     flag = 1;
                 }
                 if (RCREG == '2'){
+                    __delay_ms(300);
+                    while(PIR1bits.RCIF == 0){
+                    ;
+                    }
                     if(PIR1bits.RCIF == 1){
                     PORTD = RCREG;
                     PIR1bits.RCIF = 0;
@@ -97,10 +101,10 @@ void main(void) {
         if(index>57)
             index=0;
         flag = 0;
-        if(PIR1bits.RCIF == 1){
-        PORTD = RCREG;
-        PIR1bits.RCIF = 0;
-        }
+//        if(PIR1bits.RCIF == 1){
+//        PORTD = RCREG;
+//        PIR1bits.RCIF = 0;
+//        }
 
     }
     return;
