@@ -76,11 +76,15 @@ void main(void) {
             if(PIR1bits.RCIF == 1){
                 if (RCREG == '1'){
                     TXREG = ADC;
+                    __delay_ms(100);
+                    TXREG = 10;
+                    __delay_ms(100);
+                    TXREG = 13;
                     flag = 1;
                 }
                 if (RCREG == '2'){
                     if(PIR1bits.RCIF == 1){
-                    TXREG = RCREG;
+                    PORTD = RCREG;
                     PIR1bits.RCIF = 0;
                     }
                     flag = 1;
