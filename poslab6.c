@@ -51,33 +51,55 @@ void main(void) {
     setupINTOSC();         // 8 MHz
     initUART();
     setupADC();
+    flag = 0;
     
     
     while(1){
         
-        ADCON0bits.GO = 1;  // enciendo la bandera
-        while(ADCON0bits.GO == 1){
-            ;
-        }
-        ADIF = 0;           // apago la bandera
-        ADC = ADRESH;
+
         
-        PORTB++;
+        while (index<58)
         if(TXSTAbits.TRMT == 1){
         //TXREG = PORTB+48;
         TXREG=dato[index];
         index++;
-
+        __delay_ms(100);
         }
+        while (flag == 0){
+            ADCON0bits.GO = 1;  // enciendo la bandera
+            while(ADCON0bits.GO == 1){
+                ;
+            }
+            ADIF = 0;           // apago la bandera
+            ADC = ADRESH;
+            __delay_us(100);
+            if(PIR1bits.RCIF == 1){
+                if (RCREG == '1'){
+                    TXREG = ADC;
+                    flag = 1;
+                }
+                if (RCREG == '2'){
+                    if(PIR1bits.RCIF == 1){
+                    TXREG = RCREG;
+                    PIR1bits.RCIF = 0;
+                    }
+                    flag = 1;
+                }
+            }
+        }
+            
+            
+        
         if(index>57)
             index=0;
-
+        flag = 0;
         if(PIR1bits.RCIF == 1){
         PORTD = RCREG;
         PIR1bits.RCIF = 0;
         }
-        __delay_ms(100);
+
     }
+    return;
 }
 //******************************************************************************
 // FunciÃ³n para configurar GPIOs
